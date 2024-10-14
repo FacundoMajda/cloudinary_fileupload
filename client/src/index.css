@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply antialiased text-gray-900;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.file-input-button {
+  @apply relative overflow-hidden inline-block;
+}
+
+.file-input-button input[type="file"] {
+  @apply absolute top-0 right-0 min-w-full min-h-full opacity-0 outline-none cursor-pointer block;
+}
