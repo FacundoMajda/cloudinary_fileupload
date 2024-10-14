@@ -7,14 +7,13 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR);
 }
 
-const storage = diskStorage({
+const local_storage = diskStorage({
   destination: UPLOADS_DIR,
   filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const ext = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+    cb(null, `${file.fieldname}-${crypto.randomUUID().toString()}${ext}`);
   },
 });
 
-const uploadLocal = multer({ storage: storage });
+const uploadLocal = multer({ storage: local_storage });
 export { uploadLocal };

@@ -23,7 +23,7 @@ app.use(
   })
 );
 
-app.use("/", router);
+app.use("/api", router);
 
 app.use("/", (req, res) => {
   console.log("📥 Solicitud recibida en la ruta raíz");

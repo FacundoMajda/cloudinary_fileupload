@@ -10,17 +10,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const storage = new CloudinaryStorage({
+const cloud_storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
     return {
       folder: "polo_test",
-      format: "webp",
+      // format: "webp",
       public_id: `${file.fieldname}-${crypto.randomUUID().toString()}`,
       transformation: [{ width: 500, height: 500, crop: "fill" }],
     };
   },
 });
 
-const uploadCloud = multer({ storage: storage });
+const uploadCloud = multer({ storage: cloud_storage });
 export { uploadCloud };

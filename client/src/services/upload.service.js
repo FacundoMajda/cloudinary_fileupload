@@ -1,5 +1,49 @@
 import axios from "axios";
 
+const handleUploadProgress = (
+  uploadDuration,
+  intervalDuration,
+  setUploadProgress,
+  onComplete
+) => {
+  console.log("📊 Iniciando manejo del progreso de la subida");
+  const totalIntervals = uploadDuration / intervalDuration;
+  let currentInterval = 0;
+
+  const intervalId = setInterval(() => {
+    currentInterval += 1;
+    const progress = Math.round((currentInterval / totalIntervals) * 100);
+    setUploadProgress(progress);
+    console.log(`📊 Progreso de subida: ${progress}%`);
+
+    if (currentInterval >= totalIntervals) {
+      clearInterval(intervalId);
+      console.log("📊 Progreso de subida completado");
+      onComplete();
+    }
+  }, intervalDuration);
+};
+
+const uploadFileRequest = async (
+  endpoint,
+  formData,
+  setUploadStatus,
+  fileName
+) => {
+  console.log(`🚀 Enviando solicitud de subida a ${endpoint}`);
+  try {
+    const response = await axios.post(endpoint, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log(`✅ Respuesta del servidor: ${response.status}`);
+    setUploadStatus("success");
+    console.log(`✅ Subida completada con éxito: ${fileName}`);
+  } catch (error) {
+    setUploadStatus("error");
+    console.error(`❌ Error en la subida de: ${fileName}`, error);
+  }
+};
+
 export const uploadFile = (
   file,
   isCloud,
@@ -21,31 +65,18 @@ export const uploadFile = (
     })`
   );
 
-  const uploadDuration = 1000; // Duración de la subida en milisegundos
-  const intervalDuration = 100; // Intervalo de actualización en milisegundos
-  const totalIntervals = uploadDuration / intervalDuration;
-  let currentInterval = 0;
+  const uploadDuration = 1000; // duracion de la subida en milisegundos
+  const intervalDuration = 100; // intervealo de actualización en milisegundos
 
-  const intervalId = setInterval(() => {
-    currentInterval += 1;
-    const progress = Math.round((currentInterval / totalIntervals) * 100);
-    setUploadProgress(progress);
-    console.log(`📊 Progreso de subida: ${progress}%`);
-
-    if (currentInterval >= totalIntervals) {
-      clearInterval(intervalId);
-      axios
-        .post(endpoint, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then(() => {
-          setUploadStatus("success");
-          console.log(`✅ Subida completada con éxito: ${file.name}`);
-        })
-        .catch(() => {
-          setUploadStatus("error");
-          console.log(`❌ Error en la subida de: ${file.name}`);
-        });
+  handleUploadProgress(
+    uploadDuration,
+    intervalDuration,
+    setUploadProgress,
+    () => {
+      console.log(
+        "📊 Progreso de subida completado, iniciando solicitud de subida"
+      );
+      uploadFileRequest(endpoint, formData, setUploadStatus, file.name);
     }
-  }, intervalDuration);
+  );
 };
