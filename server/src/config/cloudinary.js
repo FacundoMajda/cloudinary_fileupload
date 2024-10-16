@@ -16,9 +16,8 @@ const cloud_storage = new CloudinaryStorage({
     return {
       folder: "polo_test",
       // format: "webp",
-      public_id: `${file.fieldname}-${crypto.randomUUID().toString()}`,
-      transformation: [{ width: 500, height: 500, crop: "fill" }],
-    };
+      public_id: `${file.fieldname}-${crypto.randomUUID().toString()}`  
+   };
   },
 });
 
